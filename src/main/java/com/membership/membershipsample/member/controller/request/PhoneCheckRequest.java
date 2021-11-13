@@ -10,4 +10,6 @@ import javax.validation.constraints.NotBlank;
 public class PhoneCheckRequest {
     @NotBlank
     private String message;
+    @NotBlank
+    private String phoneNumber;
 }

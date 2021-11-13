@@ -65,6 +65,7 @@ public class MemberController {
         return Mono.just(ResponseEntity.accepted().body(
             this.smsService.isValidMessage(SendMessageDto.builder()
                 .currentDate(LocalDateTime.now())
+                .phoneNumber(request.getPhoneNumber())
                 .message(request.getMessage())
                 .build())));
     }

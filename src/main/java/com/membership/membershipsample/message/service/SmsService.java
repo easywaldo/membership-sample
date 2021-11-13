@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Random;
 
 @Service
@@ -48,10 +49,16 @@ public class SmsService {
 
     @Transactional
     public boolean isValidMessage(SendMessageDto sendMessageDto) {
-        var result = this.messageRepository.findByMessage(sendMessageDto.getMessage());
+        var result = this.messageRepository.findByPhoneNumberAndMessageAndCreateDateAfter(
+            sendMessageDto.getPhoneNumber(),
+            sendMessageDto.getMessage(), LocalDateTime.now().minusMinutes(3L));
         if (result.isEmpty()) return false;
         var message = result.get();
-        return message.getExpiredDate().isAfter(sendMessageDto.getCurrentDate()) &&
-            message.getMessage().equals(sendMessageDto.getMessage());
+        if (message.getExpiredDate().isAfter(sendMessageDto.getCurrentDate()) &&
+            message.getMessage().equals(sendMessageDto.getMessage())) {
+            message.validMemberFlag();
+            return true;
+        }
+        return false;
     }
 }

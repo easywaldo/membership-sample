@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -37,8 +38,14 @@ public class Message {
     @Column(name = "create_date")
     private LocalDateTime createDate;
 
+    @Column(name = "confirm_date")
+    private LocalDateTime confirmDate;
+
     @Column(name = "is_send")
     private Boolean isSendMessage;
+
+    @Column(name = "is_valid_member")
+    private Boolean isValidMember;
 
     @Builder
     public Message(Long messageSeq,
@@ -59,8 +66,19 @@ public class Message {
         this.isSendMessage = isSendMessage;
     }
 
+    /**
+     * 발송 스케줄러에 의해서 메시지 발송이 될 때 플래깅 처리
+     */
     public void updateSendFlag() {
         this.sendDate = LocalDateTime.now();
         this.isSendMessage = true;
+    }
+
+    /***
+     * 발송 문자확인이 되었을 경우 인증확인 플래깅 처리
+     */
+    public void validMemberFlag() {
+        this.confirmDate = LocalDateTime.now();
+        this.isValidMember = true;
     }
 }
