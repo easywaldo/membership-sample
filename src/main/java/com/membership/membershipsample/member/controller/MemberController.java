@@ -2,8 +2,10 @@ package com.membership.membershipsample.member.controller;
 
 import com.membership.membershipsample.common.SHAEncryptServiceImpl;
 import com.membership.membershipsample.member.controller.request.JoinRequest;
+import com.membership.membershipsample.member.controller.request.PhoneCheckRequest;
 import com.membership.membershipsample.member.dto.JoinMemberDto;
 import com.membership.membershipsample.member.service.MemberService;
+import com.membership.membershipsample.message.dto.SendMessageDto;
 import com.membership.membershipsample.message.service.SmsService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
+import java.time.LocalDateTime;
 
 @RestController
 public class MemberController {
@@ -33,6 +36,21 @@ public class MemberController {
         this.memberService = memberService;
         this.smsService = smsService;
         this.validator = Validation.buildDefaultValidatorFactory().getValidator();
+    }
+
+    @ApiOperation(value = "휴대폰번호 인증절차", notes = "")
+    @PostMapping("/member/phonecheck")
+    public Mono<ResponseEntity<?>> phoneCheck(@RequestBody @Validated PhoneCheckRequest request,
+                                           @ApiIgnore Errors errors) {
+        this.validator.validate(request);
+        if (errors.hasErrors()) {
+            return Mono.just(ResponseEntity.badRequest().body(errors.getAllErrors()));
+        }
+        return Mono.just(ResponseEntity.accepted().body(
+            this.smsService.isValidMessage(SendMessageDto.builder()
+                .currentDate(LocalDateTime.now())
+                .message(request.getMessage())
+                .build())));
     }
 
     @ApiOperation(value = "회원가입 진행완료", notes = "")
