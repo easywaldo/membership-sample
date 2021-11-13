@@ -30,7 +30,7 @@ public class SwaggerConfig {
             .apiInfo(this.apiInfo())
             .select()
             .apis(RequestHandlerSelectors
-                .basePackage("com.membership.membershipsample.*"))
+                .basePackage("com.membership.membershipsample.member.controller"))
             .paths(PathSelectors.ant("/**"))
             .build();
     }
