@@ -69,6 +69,7 @@ public class MemberController {
                 .currentDate(LocalDateTime.now())
                 .phoneNumber(request.getPhoneNumber())
                 .message(request.getMessage())
+                .messageType(MessageType.JOIN_VALIDATION)
                 .build())));
     }
 

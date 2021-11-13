@@ -1,6 +1,7 @@
 package com.membership.membershipsample.message.service;
 
 import com.membership.membershipsample.message.dto.SendMessageDto;
+import com.membership.membershipsample.message.entity.MessageType;
 import com.membership.membershipsample.message.repository.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,7 +50,8 @@ public class SmsService {
 
     @Transactional
     public boolean isValidMessage(SendMessageDto sendMessageDto) {
-        var result = this.messageRepository.findByPhoneNumberAndMessageAndCreateDateAfter(
+        var result = this.messageRepository.findByMessageTypeAndPhoneNumberAndMessageAndCreateDateAfter(
+            MessageType.JOIN_VALIDATION,
             sendMessageDto.getPhoneNumber(),
             sendMessageDto.getMessage(), LocalDateTime.now().minusMinutes(3L));
         if (result.isEmpty()) return false;

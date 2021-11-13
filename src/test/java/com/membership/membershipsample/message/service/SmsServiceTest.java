@@ -1,6 +1,7 @@
 package com.membership.membershipsample.message.service;
 
 import com.membership.membershipsample.message.dto.SendMessageDto;
+import com.membership.membershipsample.message.entity.MessageType;
 import com.membership.membershipsample.message.repository.MessageRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ public class SmsServiceTest {
         var messageSeq = this.smsService.sendMessage(SendMessageDto.builder()
             .phoneNumber("1111")
             .message("TEST1234@@")
+            .messageType(MessageType.JOIN_VALIDATION)
             .build());
         this.messageRepository.findById(messageSeq).get().updateSendFlag();
 
@@ -34,6 +36,7 @@ public class SmsServiceTest {
         var result = this.smsService.isValidMessage(SendMessageDto.builder()
             .phoneNumber("1111")
             .message("TEST1234@@")
+            .messageType(MessageType.JOIN_VALIDATION)
             .currentDate(LocalDateTime.now().plusSeconds(10L))
             .build());
 
