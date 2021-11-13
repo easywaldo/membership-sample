@@ -41,4 +41,26 @@ public class SmsServiceTest {
         assertEquals(true, result);
     }
 
+    @Test
+    @Transactional
+    public void SMS_발송하여_해당_시간을_초과하여_인증요청을_하는_경우_정상_유효성_확인을_할_수_있도록_한다() {
+        // arrange
+        var messageSeq = this.smsService.sendMessage(SendMessageDto.builder()
+            .phoneNumber("1111")
+            .message("TEST1234@@")
+            .build());
+        this.messageRepository.findById(messageSeq).get().updateSendFlag();
+
+
+        // act
+        var result = this.smsService.isValidMessage(SendMessageDto.builder()
+            .phoneNumber("1111")
+            .message("TEST1234@@")
+            .currentDate(LocalDateTime.now().plusMinutes(10L))
+            .build());
+
+        // assert
+        assertEquals(false, result);
+    }
+
 }
