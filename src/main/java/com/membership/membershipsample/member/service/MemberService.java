@@ -1,5 +1,7 @@
 package com.membership.membershipsample.member.service;
 
+import com.membership.membershipsample.member.controller.response.JoinResult;
+import com.membership.membershipsample.member.controller.response.JoinResultType;
 import com.membership.membershipsample.member.dto.JoinMemberDto;
 import com.membership.membershipsample.member.entity.Member;
 import com.membership.membershipsample.member.repository.MemberRepository;
@@ -23,19 +25,28 @@ public class MemberService {
     }
 
     @Transactional
-    public Long joinMember(JoinMemberDto joinMemberDto) {
+    public JoinResult joinMember(JoinMemberDto joinMemberDto) {
         // TODO: 회원 중복검사 등 데이터베이스 유효성 검사를 수행한다
         if (isDuplicatedMember(joinMemberDto)) {
-            return -100L;
+            return JoinResult.builder()
+                .memberSeq(0L)
+                .joinResultType(JoinResultType.ALREADY_JOINED)
+                .build();
         }
 
         if (messageRepository.findByPhoneNumberAndConfirmDateAfter(
             joinMemberDto.getPhoneNumber(), LocalDateTime.now().minusMinutes(3L)).size() == 0) {
-            return -200L;
+            return JoinResult.builder()
+                .memberSeq(0L)
+                .joinResultType(JoinResultType.NOT_VALIDATED)
+                .build();
         }
 
         Member joinedMember = memberRepository.save(joinMemberDto.toEntity());
-        return joinedMember.getMemberSeq();
+        return JoinResult.builder()
+            .memberSeq(joinedMember.getMemberSeq())
+            .joinResultType(JoinResultType.SUCCESS)
+            .build();
     }
 
     public boolean isDuplicatedMember(JoinMemberDto joinMemberDto) {

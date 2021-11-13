@@ -55,12 +55,14 @@ public class Message {
                    LocalDateTime expiredDate,
                    LocalDateTime sendDate,
                    LocalDateTime createDate,
+                   LocalDateTime confirmDate,
                    Boolean isSendMessage) {
         this.messageSeq = messageSeq;
         this.message = message;
         this.phoneNumber = phoneNumber;
         this.senderPhoneNumber = senderPhoneNumber;
         this.expiredDate = expiredDate;
+        this.confirmDate = confirmDate;
         this.sendDate = sendDate;
         this.createDate = createDate;
         this.isSendMessage = isSendMessage;
