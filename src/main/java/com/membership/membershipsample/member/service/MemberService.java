@@ -29,6 +29,6 @@ public class MemberService {
     }
 
     public boolean isDuplicatedMember(JoinMemberDto joinMemberDto) {
-         return memberRepository.findMemberByPhoneNumber(joinMemberDto.getPhoneNumber()).isPresent();
+         return memberRepository.findMemberByPhoneNumberOrEmail(joinMemberDto.getPhoneNumber(), joinMemberDto.getEmail()).isPresent();
     }
 }
