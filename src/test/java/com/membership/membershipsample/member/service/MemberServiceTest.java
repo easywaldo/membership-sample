@@ -40,4 +40,23 @@ public class MemberServiceTest {
                     .build());
         assertEquals(joinMemberDto, memberDto.get());
     }
+
+    @Test
+    public void 회원_기입에_대한_중복가입을_방지한다() {
+        // arrange
+        JoinMemberDto joinMemberDto = JoinMemberDto.builder()
+            .email("tester@gmail.com")
+            .password("1234")
+            .name("tester")
+            .phoneNumber("0001112222")
+            .nickName("별명")
+            .build();
+        this.memberService.joinMember(joinMemberDto);
+
+        // act
+        var resultSeqNo = this.memberService.joinMember(joinMemberDto);
+
+        // assert
+        assertEquals(0, resultSeqNo);
+    }
 }
