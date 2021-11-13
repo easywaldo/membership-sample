@@ -5,8 +5,7 @@ import com.membership.membershipsample.member.entity.Member;
 import com.membership.membershipsample.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MemberService {
@@ -29,6 +28,32 @@ public class MemberService {
     }
 
     public boolean isDuplicatedMember(JoinMemberDto joinMemberDto) {
-         return memberRepository.findMemberByPhoneNumberOrEmail(joinMemberDto.getPhoneNumber(), joinMemberDto.getEmail()).isPresent();
+         return memberRepository.findMemberByPhoneNumberOrEmail(
+             joinMemberDto.getPhoneNumber(), joinMemberDto.getEmail()).isPresent();
     }
+
+    @Transactional(readOnly = true)
+    public JoinMemberDto memberLogin(JoinMemberDto joinMemberDto) {
+        var member = memberRepository.findMemberByPhoneNumberOrEmail(
+            joinMemberDto.getPhoneNumber(), joinMemberDto.getEmail()).orElseGet(() -> {
+                return Member.builder()
+                    .name("UnknownUser")
+                    .nickName("UnknownUser")
+                    .password("")
+                    .build();
+        });
+        if (!member.getPassword().equals(joinMemberDto.getPassword())) {
+            return JoinMemberDto.builder()
+                .name("UnknownUser")
+                .nickName("UnknownUser")
+                .build();
+        }
+        return JoinMemberDto.builder()
+            .email(member.getEmail())
+            .name(member.getName())
+            .nickName(member.getNickName())
+            .phoneNumber(member.getPhoneNumber())
+            .build();
+    }
+
 }

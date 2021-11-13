@@ -2,6 +2,7 @@ package com.membership.membershipsample.member.controller;
 
 import com.membership.membershipsample.common.SHAEncryptServiceImpl;
 import com.membership.membershipsample.member.controller.request.JoinRequest;
+import com.membership.membershipsample.member.controller.request.LoginRequest;
 import com.membership.membershipsample.member.controller.request.PhoneCheckRequest;
 import com.membership.membershipsample.member.controller.request.SendTokenRequest;
 import com.membership.membershipsample.member.dto.JoinMemberDto;
@@ -84,6 +85,23 @@ public class MemberController {
             .nickName(request.getNickName())
             .phoneNumber(request.getPhoneNumber())
             .password(password)
+            .build())));
+    }
+
+    @ApiOperation(value = "회원 로그인 진행", notes = "")
+    @PostMapping("/member/login")
+    public Mono<ResponseEntity<?>> memberLogin(@RequestBody LoginRequest request,
+                                               @ApiIgnore Errors errors) {
+        this.validator.validate(request);
+        if (errors.hasErrors()) {
+            return Mono.just(ResponseEntity.badRequest().body(errors.getAllErrors()));
+        }
+
+        String password = SHAEncryptServiceImpl.getSHA512(request.getPassword());
+        return Mono.just(ResponseEntity.accepted().body(this.memberService.memberLogin(JoinMemberDto.builder()
+            .password(password)
+            .email(request.getEmail())
+            .phoneNumber(request.getPhoneNumber())
             .build())));
     }
 
