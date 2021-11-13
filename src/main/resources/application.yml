@@ -11,3 +11,7 @@ spring:
     username: sa
     password: password
     url: jdbc:h2:mem:testdb;DATABASE_TO_UPPER=false;DB_CLOSE_DELAY=-1
+
+member:
+  message:
+    send-auto: true

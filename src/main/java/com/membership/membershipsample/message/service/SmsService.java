@@ -29,7 +29,16 @@ public class SmsService {
         char prefixF =  prefixValue.charAt(random.nextInt(prefixValue.length()));
         char prefixG =  prefixValue.charAt(random.nextInt(prefixValue.length()));
         return String.format("%s%s%s%s%s%s%s%s%s%s",
-            prefixA, random.nextInt(9), prefixB, random.nextInt(9), prefixC, random.nextInt(9), prefixD, prefixE, prefixF, prefixG);
+            prefixA,
+            random.nextInt(9),
+            prefixB,
+            random.nextInt(9),
+            prefixC,
+            random.nextInt(9),
+            prefixD,
+            prefixE,
+            prefixF,
+            prefixG);
     }
 
     @Transactional
@@ -42,8 +51,7 @@ public class SmsService {
         var result = this.messageRepository.findByMessage(sendMessageDto.getMessage());
         if (result.isEmpty()) return false;
         var message = result.get();
-        return message.getIsSendMessage().equals(true) &&
-            message.getExpiredDate().isAfter(sendMessageDto.getCurrentDate()) &&
+        return message.getExpiredDate().isAfter(sendMessageDto.getCurrentDate()) &&
             message.getMessage().equals(sendMessageDto.getMessage());
     }
 }

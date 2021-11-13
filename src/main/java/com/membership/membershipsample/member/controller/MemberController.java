@@ -3,6 +3,7 @@ package com.membership.membershipsample.member.controller;
 import com.membership.membershipsample.common.SHAEncryptServiceImpl;
 import com.membership.membershipsample.member.controller.request.JoinRequest;
 import com.membership.membershipsample.member.controller.request.PhoneCheckRequest;
+import com.membership.membershipsample.member.controller.request.SendTokenRequest;
 import com.membership.membershipsample.member.dto.JoinMemberDto;
 import com.membership.membershipsample.member.service.MemberService;
 import com.membership.membershipsample.message.dto.SendMessageDto;
@@ -36,6 +37,20 @@ public class MemberController {
         this.memberService = memberService;
         this.smsService = smsService;
         this.validator = Validation.buildDefaultValidatorFactory().getValidator();
+    }
+
+    @ApiOperation(value = "휴대폰번호 인증문자발송", notes = "")
+    @PostMapping("/member/send-token")
+    public Mono<ResponseEntity<?>> sendToken(@RequestBody @Validated SendTokenRequest request,
+                                             @ApiIgnore Errors errors) {
+        this.validator.validate(request);
+        if (errors.hasErrors()) {
+            return Mono.just(ResponseEntity.badRequest().body(errors.getAllErrors()));
+        }
+        return Mono.just(ResponseEntity.accepted().body(this.smsService.sendMessage(SendMessageDto.builder()
+            .message(this.smsService.issueToken())
+            .phoneNumber(request.getPhoneNumber())
+            .build())));
     }
 
     @ApiOperation(value = "휴대폰번호 인증절차", notes = "")
