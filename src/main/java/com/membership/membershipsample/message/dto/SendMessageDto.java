@@ -1,6 +1,7 @@
 package com.membership.membershipsample.message.dto;
 
 import com.membership.membershipsample.message.entity.Message;
+import com.membership.membershipsample.message.entity.MessageType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,14 +13,16 @@ import java.time.LocalDateTime;
 public class SendMessageDto {
     private String phoneNumber;
     private String message;
-    private final String SENDER_PHONE_NUMBER = "1588-1111";
+    private String SENDER_PHONE_NUMBER = "1588-1111";
     private LocalDateTime currentDate;
+    private MessageType messageType;
 
     @Builder
-    public SendMessageDto(String phoneNumber, String message, LocalDateTime currentDate) {
+    public SendMessageDto(String phoneNumber, String message, LocalDateTime currentDate, MessageType messageType) {
         this.phoneNumber = phoneNumber;
         this.message = message;
         this.currentDate = currentDate;
+        this.messageType = messageType;
     }
 
     public Message toEntity() {
@@ -30,6 +33,7 @@ public class SendMessageDto {
             .expiredDate(LocalDateTime.now().plusMinutes(3L))
             .senderPhoneNumber(SENDER_PHONE_NUMBER)
             .phoneNumber(this.phoneNumber)
+            .messageType(this.messageType)
             .build();
     }
 }

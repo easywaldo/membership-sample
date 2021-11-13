@@ -8,6 +8,7 @@ import com.membership.membershipsample.member.controller.request.SendTokenReques
 import com.membership.membershipsample.member.dto.JoinMemberDto;
 import com.membership.membershipsample.member.service.MemberService;
 import com.membership.membershipsample.message.dto.SendMessageDto;
+import com.membership.membershipsample.message.entity.MessageType;
 import com.membership.membershipsample.message.service.SmsService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class MemberController {
     }
 
     @ApiOperation(value = "휴대폰번호 인증문자발송", notes = "")
-    @PostMapping("/member/send-token")
+    @PostMapping("/member/send-join-token")
     public Mono<ResponseEntity<?>> sendToken(@RequestBody @Validated SendTokenRequest request,
                                              @ApiIgnore Errors errors) {
         this.validator.validate(request);
@@ -51,11 +52,12 @@ public class MemberController {
         return Mono.just(ResponseEntity.accepted().body(this.smsService.sendMessage(SendMessageDto.builder()
             .message(this.smsService.issueToken())
             .phoneNumber(request.getPhoneNumber())
+            .messageType(MessageType.JOIN_VALIDATION)
             .build())));
     }
 
     @ApiOperation(value = "휴대폰번호 인증절차", notes = "")
-    @PostMapping("/member/phonecheck")
+    @PostMapping("/member/phone-check-join-token")
     public Mono<ResponseEntity<?>> phoneCheck(@RequestBody @Validated PhoneCheckRequest request,
                                            @ApiIgnore Errors errors) {
         this.validator.validate(request);

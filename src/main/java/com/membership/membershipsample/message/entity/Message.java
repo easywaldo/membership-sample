@@ -19,6 +19,10 @@ public class Message {
     @Column(name = "message_seq")
     private Long messageSeq;
 
+    @Enumerated
+    @Column(name = "message_type")
+    private MessageType messageType;
+
     @Column(name = "message")
     private String message;
 
@@ -56,6 +60,7 @@ public class Message {
                    LocalDateTime sendDate,
                    LocalDateTime createDate,
                    LocalDateTime confirmDate,
+                   MessageType messageType,
                    Boolean isSendMessage) {
         this.messageSeq = messageSeq;
         this.message = message;
@@ -65,6 +70,7 @@ public class Message {
         this.confirmDate = confirmDate;
         this.sendDate = sendDate;
         this.createDate = createDate;
+        this.messageType = messageType;
         this.isSendMessage = isSendMessage;
     }
 
