@@ -7,6 +7,7 @@ import com.membership.membershipsample.member.dto.JoinMemberDto;
 import com.membership.membershipsample.member.entity.Member;
 import com.membership.membershipsample.member.repository.MemberRepository;
 import com.membership.membershipsample.message.repository.MessageRepository;
+import com.membership.membershipsample.message.service.SmsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,12 +18,15 @@ import java.time.LocalDateTime;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final MessageRepository messageRepository;
+    private final SmsService smsService;
 
     @Autowired
     public MemberService(MemberRepository memberRepository,
-                         MessageRepository messageRepository) {
+                         MessageRepository messageRepository,
+                         SmsService smsService) {
         this.memberRepository = memberRepository;
         this.messageRepository = messageRepository;
+        this.smsService = smsService;
     }
 
     @Transactional
@@ -65,6 +69,17 @@ public class MemberService {
         if (!member.get().getPassword().equals(joinMemberDto.getPassword())) {
             return LoginResultType.NOT_MATCH;
         }
+        return LoginResultType.SUCCESS;
+    }
+
+    @Transactional
+    public LoginResultType memberResetPassword(JoinMemberDto joinMemberDto) {
+        var member = memberRepository.findMemberByPhoneNumberOrEmail(
+            joinMemberDto.getPhoneNumber(), joinMemberDto.getEmail());
+        if (member.isEmpty()) {
+            return LoginResultType.NOT_MATCH;
+        }
+        member.get().resetPassword(smsService.issueToken());
         return LoginResultType.SUCCESS;
     }
 

@@ -1,6 +1,7 @@
 package com.membership.membershipsample.member.service;
 
 import com.membership.membershipsample.member.dto.JoinMemberDto;
+import com.membership.membershipsample.member.entity.Member;
 import com.membership.membershipsample.member.repository.MemberRepository;
 import com.membership.membershipsample.message.entity.Message;
 import com.membership.membershipsample.message.repository.MessageRepository;
@@ -69,5 +70,28 @@ public class MemberServiceTest {
 
         // assert
         assertEquals(0, joinResult.getMemberSeq());
+    }
+
+    @Test
+    public void 비밀번호_변경_요청에_대한_정상_메시지_발송을_확인한다() {
+        // arrange
+        var memberSeq = memberRepository.save(Member.builder()
+            .email("acetious@gmail.com")
+            .phoneNumber("1111")
+            .password("password")
+            .build()).getMemberSeq();
+
+        // act
+        var result = memberService.memberResetPassword(JoinMemberDto.builder()
+            .email("acetious@gmail.com")
+            .phoneNumber("1111")
+            .build());
+
+        // assert
+        var updated = memberRepository.findById(memberSeq);
+        assertNotNull(updated);
+        assertEquals(memberSeq, updated.get().getMemberSeq());
+        assertNotEquals("password", updated.get().getPassword());
+
     }
 }

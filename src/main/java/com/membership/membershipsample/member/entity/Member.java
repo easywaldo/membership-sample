@@ -38,4 +38,9 @@ public class Member {
         this.name = name;
         this.phoneNumber = phoneNumber;
     }
+
+    public Member resetPassword(String resetToken) {
+        this.password =  resetToken;
+        return this;
+    }
 }
