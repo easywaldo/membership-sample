@@ -6,6 +6,8 @@ import com.membership.membershipsample.member.controller.response.LoginResultTyp
 import com.membership.membershipsample.member.dto.JoinMemberDto;
 import com.membership.membershipsample.member.entity.Member;
 import com.membership.membershipsample.member.repository.MemberRepository;
+import com.membership.membershipsample.message.dto.SendMessageDto;
+import com.membership.membershipsample.message.entity.MessageType;
 import com.membership.membershipsample.message.repository.MessageRepository;
 import com.membership.membershipsample.message.service.SmsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,10 +78,20 @@ public class MemberService {
     public LoginResultType memberResetPassword(JoinMemberDto joinMemberDto) {
         var member = memberRepository.findMemberByPhoneNumberOrEmail(
             joinMemberDto.getPhoneNumber(), joinMemberDto.getEmail());
+
         if (member.isEmpty()) {
             return LoginResultType.NOT_MATCH;
         }
-        member.get().resetPassword(smsService.issueToken());
+
+        var resetToken = smsService.issueToken();
+        member.get().resetPassword(resetToken);
+        smsService.sendMessage(SendMessageDto.builder()
+            .messageType(MessageType.PASSWORD_MODIFICATION)
+            .phoneNumber(joinMemberDto.getPhoneNumber())
+            .currentDate(LocalDateTime.now())
+            .message(resetToken)
+            .build());
+
         return LoginResultType.SUCCESS;
     }
 
