@@ -1,10 +1,7 @@
 package com.membership.membershipsample.member.controller;
 
 import com.membership.membershipsample.common.SHAEncryptServiceImpl;
-import com.membership.membershipsample.member.controller.request.JoinRequest;
-import com.membership.membershipsample.member.controller.request.LoginRequest;
-import com.membership.membershipsample.member.controller.request.PhoneCheckRequest;
-import com.membership.membershipsample.member.controller.request.SendTokenRequest;
+import com.membership.membershipsample.member.controller.request.*;
 import com.membership.membershipsample.member.dto.JoinMemberDto;
 import com.membership.membershipsample.member.service.MemberService;
 import com.membership.membershipsample.message.dto.SendMessageDto;
@@ -94,7 +91,7 @@ public class MemberController {
 
     @ApiOperation(value = "회원 로그인 진행", notes = "")
     @PostMapping("/member/login")
-    public Mono<ResponseEntity<?>> memberLogin(@RequestBody LoginRequest request,
+    public Mono<ResponseEntity<?>> memberLogin(@RequestBody @Validated LoginRequest request,
                                                @ApiIgnore Errors errors) {
         this.validator.validate(request);
         if (errors.hasErrors()) {
@@ -104,6 +101,20 @@ public class MemberController {
         String password = SHAEncryptServiceImpl.getSHA512(request.getPassword());
         return Mono.just(ResponseEntity.accepted().body(this.memberService.memberLogin(JoinMemberDto.builder()
             .password(password)
+            .email(request.getEmail())
+            .phoneNumber(request.getPhoneNumber())
+            .build())));
+    }
+
+    @ApiOperation(value = "비밀번호 리셋요청 진행", notes = "비밀번호를 분실하였을 경우 비밀번호를 임시비밀번호로 초기화하며 비밀번호 인증여부를 미인증으로 변경한다")
+    @PostMapping("/member/reset-password")
+    public Mono<ResponseEntity<?>> resetPassword(@RequestBody @Validated ResetPasswordRequest request,
+                                                 @ApiIgnore Errors errors) {
+        this.validator.validate(request);
+        if (errors.hasErrors()) {
+            return Mono.just(ResponseEntity.badRequest().body(errors.getAllErrors()));
+        }
+        return Mono.just(ResponseEntity.accepted().body(this.memberService.memberResetPassword(JoinMemberDto.builder()
             .email(request.getEmail())
             .phoneNumber(request.getPhoneNumber())
             .build())));
