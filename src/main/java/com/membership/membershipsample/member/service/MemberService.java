@@ -1,6 +1,7 @@
 package com.membership.membershipsample.member.service;
 
 import com.membership.membershipsample.common.SHAEncryptServiceImpl;
+import com.membership.membershipsample.member.controller.request.LoginRequest;
 import com.membership.membershipsample.member.controller.response.JoinResult;
 import com.membership.membershipsample.member.controller.response.JoinResultType;
 import com.membership.membershipsample.member.controller.response.LoginResultType;
@@ -34,7 +35,6 @@ public class MemberService {
 
     @Transactional
     public JoinResult joinMember(JoinMemberDto joinMemberDto) {
-        // TODO: 회원 중복검사 등 데이터베이스 유효성 검사를 수행한다
         if (isDuplicatedMember(joinMemberDto)) {
             return JoinResult.builder()
                 .memberSeq(0L)
@@ -95,6 +95,23 @@ public class MemberService {
             .build());
 
         return LoginResultType.SUCCESS;
+    }
+
+    @Transactional(readOnly = true)
+    public JoinMemberDto selectMe(Long memberSeq) {
+        var member = memberRepository.findById(memberSeq);
+        if (member.isEmpty()) {
+            JoinMemberDto.builder()
+                .memberSeq(0L)
+                .name("UnknownUser")
+                .build();
+        }
+        return JoinMemberDto.builder()
+            .memberSeq(member.get().getMemberSeq())
+            .email(member.get().getEmail())
+            .nickName(member.get().getNickName())
+            .phoneNumber(member.get().getPhoneNumber())
+            .build();
     }
 
 }

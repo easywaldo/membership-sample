@@ -120,4 +120,14 @@ public class MemberController {
             .build())));
     }
 
+    @ApiOperation(value = "내 정보보기", notes = "")
+    @PostMapping("/member/me-info")
+    public Mono<ResponseEntity<?>> selectMe(@RequestBody @Validated MeInfoRequest request,
+                                            @ApiIgnore Errors errors) {
+        this.validator.validate(request);
+        if (errors.hasErrors()) {
+            return Mono.just(ResponseEntity.badRequest().body(errors.getAllErrors()));
+        }
+        return Mono.just(ResponseEntity.accepted().body(this.memberService.selectMe(request.getMemberSeq())));
+    }
 }

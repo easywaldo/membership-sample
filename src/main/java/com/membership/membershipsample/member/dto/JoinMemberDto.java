@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class JoinMemberDto {
+    private Long memberSeq;
     private String email;
     private String nickName;
     private String password;
@@ -19,12 +20,14 @@ public class JoinMemberDto {
                          String nickName,
                          String password,
                          String name,
-                         String phoneNumber) {
+                         String phoneNumber,
+                         Long memberSeq) {
         this.email = email;
         this.nickName = nickName;
         this.password = password;
         this.name = name;
         this.phoneNumber = phoneNumber;
+        this.memberSeq = memberSeq;
     }
 
     @Override
