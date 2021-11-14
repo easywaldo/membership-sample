@@ -4,6 +4,7 @@ import com.membership.membershipsample.common.SHAEncryptServiceImpl;
 import com.membership.membershipsample.member.controller.request.LoginRequest;
 import com.membership.membershipsample.member.controller.response.JoinResult;
 import com.membership.membershipsample.member.controller.response.JoinResultType;
+import com.membership.membershipsample.member.controller.response.LoginResult;
 import com.membership.membershipsample.member.controller.response.LoginResultType;
 import com.membership.membershipsample.member.dto.JoinMemberDto;
 import com.membership.membershipsample.member.entity.Member;
@@ -63,16 +64,24 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public LoginResultType memberLogin(JoinMemberDto joinMemberDto) {
+    public LoginResult memberLogin(JoinMemberDto joinMemberDto) {
         var member = memberRepository.findMemberByPhoneNumberOrEmail(
             joinMemberDto.getPhoneNumber(), joinMemberDto.getEmail());
         if (member.isEmpty()) {
-            return LoginResultType.NOT_MATCH;
+            return LoginResult.builder()
+                .loginResultType(LoginResultType.NOT_MATCH)
+                .build();
         }
         if (!member.get().getPassword().equals(joinMemberDto.getPassword())) {
-            return LoginResultType.NOT_MATCH;
+            return LoginResult.builder()
+                .loginResultType(LoginResultType.NOT_MATCH)
+                .build();
         }
-        return LoginResultType.SUCCESS;
+        return LoginResult.builder()
+            .loginResultType(LoginResultType.SUCCESS)
+            .phoneNumber(member.get().getPhoneNumber())
+            .email(member.get().getEmail())
+            .build();
     }
 
     @Transactional
@@ -98,8 +107,8 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public JoinMemberDto selectMe(Long memberSeq) {
-        var member = memberRepository.findById(memberSeq);
+    public JoinMemberDto selectMe(String email) {
+        var member = memberRepository.findMemberByEmail(email);
         if (member.isEmpty()) {
             JoinMemberDto.builder()
                 .memberSeq(0L)

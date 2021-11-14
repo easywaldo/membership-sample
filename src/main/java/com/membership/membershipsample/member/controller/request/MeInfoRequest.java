@@ -10,4 +10,5 @@ import javax.validation.constraints.Min;
 public class MeInfoRequest {
     @Min(1)
     private Long memberSeq;
+
 }

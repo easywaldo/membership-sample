@@ -29,3 +29,8 @@ member:
   message:
     send-auto: true
 
+
+
+auth:
+  token:
+    key: MemberShipService20211114!@
