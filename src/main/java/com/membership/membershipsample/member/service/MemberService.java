@@ -1,5 +1,6 @@
 package com.membership.membershipsample.member.service;
 
+import com.membership.membershipsample.common.SHAEncryptServiceImpl;
 import com.membership.membershipsample.member.controller.response.JoinResult;
 import com.membership.membershipsample.member.controller.response.JoinResultType;
 import com.membership.membershipsample.member.controller.response.LoginResultType;
@@ -84,7 +85,8 @@ public class MemberService {
         }
 
         var resetToken = smsService.issueToken();
-        member.get().resetPassword(resetToken);
+        String password = SHAEncryptServiceImpl.getSHA512(resetToken);
+        member.get().resetPassword(password);
         smsService.sendMessage(SendMessageDto.builder()
             .messageType(MessageType.PASSWORD_MODIFICATION)
             .phoneNumber(joinMemberDto.getPhoneNumber())

@@ -42,6 +42,7 @@ public class JoinMemberDto {
             .nickName(this.nickName)
             .password(this.password)
             .phoneNumber(this.phoneNumber)
+            .passwordValidation(true)
             .build();
     }
 }

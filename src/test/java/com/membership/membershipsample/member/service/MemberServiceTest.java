@@ -73,7 +73,7 @@ public class MemberServiceTest {
     }
 
     @Test
-    public void 비밀번호_변경_요청에_대한_정상_메시지_발송을_확인한다() {
+    public void 비밀번호_변경_요청에_대한_정상_변경_여부를_확인한다() {
         // arrange
         var memberSeq = memberRepository.save(Member.builder()
             .email("acetious@gmail.com")
