@@ -5,6 +5,7 @@ import com.membership.membershipsample.member.entity.Member;
 import com.membership.membershipsample.member.repository.MemberRepository;
 import com.membership.membershipsample.message.entity.Message;
 import com.membership.membershipsample.message.repository.MessageRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +22,12 @@ public class MemberServiceTest {
     public MemberRepository memberRepository;
     @Autowired
     public MessageRepository messageRepository;
+
+    @BeforeEach
+    public void setUp() {
+        this.memberRepository.deleteAll();
+        this.messageRepository.deleteAll();
+    }
 
     @Test
     public void 회원이_가입이_되는지_확인한다() {
@@ -76,15 +83,15 @@ public class MemberServiceTest {
     public void 비밀번호_변경_요청에_대한_정상_변경_여부를_확인한다() {
         // arrange
         var memberSeq = memberRepository.save(Member.builder()
-            .email("acetious@gmail.com")
-            .phoneNumber("1111")
+            .email("tester@gmail.com")
+            .phoneNumber("password")
             .password("password")
             .build()).getMemberSeq();
 
         // act
         var result = memberService.memberResetPassword(JoinMemberDto.builder()
-            .email("acetious@gmail.com")
-            .phoneNumber("1111")
+            .email("tester@gmail.com")
+            .phoneNumber("password")
             .build());
 
         // assert

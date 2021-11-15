@@ -48,7 +48,7 @@ public class MemberController {
         this.authService = authService;
     }
 
-    @ApiOperation(value = "휴대폰번호 인증문자발송", notes = "")
+    @ApiOperation(value = "회원 가입인증문자 발송", notes = "회원 가입에 필요한 휴대폰번호 인증문자를 발송한다.")
     @PostMapping("/member/send-join-token")
     public Mono<ResponseEntity<?>> sendToken(@RequestBody @Validated SendTokenRequest request,
                                              @ApiIgnore Errors errors) {
@@ -63,7 +63,7 @@ public class MemberController {
             .build())));
     }
 
-    @ApiOperation(value = "휴대폰번호 인증절차", notes = "")
+    @ApiOperation(value = "회원인증문자 확인 검증", notes = "회원 가입에 필요한 휴대폰번호 인증번호를 확인합니다.")
     @PostMapping("/member/phone-check-join-token")
     public Mono<ResponseEntity<?>> phoneCheck(@RequestBody @Validated PhoneCheckRequest request,
                                            @ApiIgnore Errors errors) {
@@ -80,7 +80,7 @@ public class MemberController {
                 .build())));
     }
 
-    @ApiOperation(value = "회원가입 진행완료", notes = "")
+    @ApiOperation(value = "회원가입 진행완료", notes = "인증문자 확인이 완료되면 회원 가입에 필요한 양식들을 입력하여 회원가입을 마칩니다.")
     @PostMapping("/member/join")
     public Mono<ResponseEntity<?>> memberJoin(@RequestBody @Validated JoinRequest request,
                                            @ApiIgnore Errors errors) {
@@ -99,7 +99,7 @@ public class MemberController {
             .build())));
     }
 
-    @ApiOperation(value = "회원 로그인 진행", notes = "")
+    @ApiOperation(value = "회원 로그인 진행", notes = "회원 로그인을 하게 되면 입력한 정보를 바탕으로 회원여부를 확인하여 회원데이터를 JWT 쿠키로 생성합니다.")
     @PostMapping("/member/login")
     public Mono<ResponseEntity<?>> memberLogin(@RequestBody @Validated LoginRequest request,
                                                @ApiIgnore HttpServletResponse response,
@@ -125,7 +125,7 @@ public class MemberController {
         return Mono.just(ResponseEntity.accepted().body(loginResult));
     }
 
-    @ApiOperation(value = "비밀번호 리셋요청 진행", notes = "비밀번호를 분실하였을 경우 비밀번호를 임시비밀번호로 초기화하며 비밀번호 인증여부를 미인증으로 변경한다")
+    @ApiOperation(value = "비밀번호 리셋요청", notes = "비밀번호를 분실하였을 경우 비밀번호를 임시비밀번호로 초기화하며 비밀번호 인증여부를 미인증으로 변경합니다.")
     @PostMapping("/member/reset-password")
     public Mono<ResponseEntity<?>> resetPassword(@RequestBody @Validated ResetPasswordRequest request,
                                                  @ApiIgnore Errors errors) {
@@ -139,7 +139,7 @@ public class MemberController {
             .build())));
     }
 
-    @ApiOperation(value = "내 정보보기", notes = "")
+    @ApiOperation(value = "나의 정보조회", notes = "JWT 쿠키정보로 회원인증값을 조회하여 회원 데이터를 조회합니다.")
     @PostMapping("/member/me-info")
     public Mono<ResponseEntity<?>> selectMe(HttpServletRequest requestServlet) {
         String userJwt = authService.getUserIdFromJwtCookie(requestServlet);
@@ -151,7 +151,7 @@ public class MemberController {
         return Mono.just(ResponseEntity.accepted().body(this.memberService.selectMe(userJwt)));
     }
 
-    @ApiOperation(value = "로그아웃", notes = "회원에 대한 로그아웃을 수행하여 jwt 토큰값을 삭제한다")
+    @ApiOperation(value = "로그아웃", notes = "회원에 대한 로그아웃을 수행하여 jwt 토큰값을 삭제합니다.")
     @PostMapping("/member/logout")
     public Mono<ResponseEntity<?>> memberLogout(@ApiIgnore HttpServletResponse response) {
         Cookie deleteCookie = CookieService.deleteCookie("userJwt");
