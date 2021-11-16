@@ -1,5 +1,6 @@
 package com.membership.membershipsample.member.service;
 
+import com.membership.membershipsample.member.entity.Member;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -79,5 +80,12 @@ public class AuthService {
         String userId = userJwt.trim().replace("Bearer", "");
 
         return userId;
+    }
+
+    public Member getUserDetails(HttpServletRequest request) {
+        String userId = this.getJwtValueFromHeader(request);
+        return Member.builder()
+            .email(userId)
+            .build();
     }
 }

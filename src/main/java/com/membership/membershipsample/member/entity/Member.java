@@ -48,4 +48,10 @@ public class Member {
         this.passwordValidation = false;
         return this;
     }
+
+    @Transient
+    private String roleGroup;
+    public String getRoleGroup() {
+        return "general";
+    }
 }
