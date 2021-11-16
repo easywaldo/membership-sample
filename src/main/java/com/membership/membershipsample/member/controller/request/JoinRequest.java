@@ -7,14 +7,14 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @Setter
 public class JoinRequest {
-    @NotBlank
+    @NotBlank(message = "이메일을 입력해주세요.")
     private String email;
-    @NotBlank
+    @NotBlank(message = "이름을 입력해주세요.")
     private String name;
-    @NotBlank
+    @NotBlank(message = "패스워드를 입력해주세요.")
     private String password;
-    @NotBlank
+    @NotBlank(message = "별명을 입력해주세요.")
     private String nickName;
-    @NotBlank
+    @NotBlank(message = "휴대번호를 입력해주세요.")
     private String phoneNumber;
 }

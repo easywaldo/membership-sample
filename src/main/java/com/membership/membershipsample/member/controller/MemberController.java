@@ -34,7 +34,7 @@ public class MemberController {
 
     private final SmsService smsService;
     private final MemberService memberService;
-    private final Validator validator;
+    private final Validator javaxValidator;
     private final AuthService authService;
 
     @Autowired
@@ -44,7 +44,7 @@ public class MemberController {
 
         this.memberService = memberService;
         this.smsService = smsService;
-        this.validator = Validation.buildDefaultValidatorFactory().getValidator();
+        this.javaxValidator = Validation.buildDefaultValidatorFactory().getValidator();
         this.authService = authService;
     }
 
@@ -52,7 +52,7 @@ public class MemberController {
     @PostMapping("/member/send-join-token")
     public Mono<ResponseEntity<?>> sendToken(@RequestBody @Validated SendTokenRequest request,
                                              @ApiIgnore Errors errors) {
-        this.validator.validate(request);
+        this.javaxValidator.validate(request);
         if (errors.hasErrors()) {
             return Mono.just(ResponseEntity.badRequest().body(errors.getAllErrors()));
         }
@@ -67,7 +67,7 @@ public class MemberController {
     @PostMapping("/member/phone-check-join-token")
     public Mono<ResponseEntity<?>> phoneCheck(@RequestBody @Validated PhoneCheckRequest request,
                                            @ApiIgnore Errors errors) {
-        this.validator.validate(request);
+        this.javaxValidator.validate(request);
         if (errors.hasErrors()) {
             return Mono.just(ResponseEntity.badRequest().body(errors.getAllErrors()));
         }
@@ -84,7 +84,7 @@ public class MemberController {
     @PostMapping("/member/join")
     public Mono<ResponseEntity<?>> memberJoin(@RequestBody @Validated JoinRequest request,
                                            @ApiIgnore Errors errors) {
-        this.validator.validate(request);
+        this.javaxValidator.validate(request);
         if (errors.hasErrors()) {
             return Mono.just(ResponseEntity.badRequest().body(errors.getAllErrors()));
         }
@@ -104,7 +104,7 @@ public class MemberController {
     public Mono<ResponseEntity<?>> memberLogin(@RequestBody @Validated LoginRequest request,
                                                @ApiIgnore HttpServletResponse response,
                                                @ApiIgnore Errors errors) throws UnsupportedEncodingException {
-        this.validator.validate(request);
+        request.validate(request, errors);
         if (errors.hasErrors()) {
             return Mono.just(ResponseEntity.badRequest().body(errors.getAllErrors()));
         }
@@ -129,7 +129,7 @@ public class MemberController {
     @PostMapping("/member/reset-password")
     public Mono<ResponseEntity<?>> resetPassword(@RequestBody @Validated ResetPasswordRequest request,
                                                  @ApiIgnore Errors errors) {
-        this.validator.validate(request);
+        this.javaxValidator.validate(request);
         if (errors.hasErrors()) {
             return Mono.just(ResponseEntity.badRequest().body(errors.getAllErrors()));
         }
