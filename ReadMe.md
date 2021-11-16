@@ -29,3 +29,12 @@
 #### 인메모리 H2 DB 정보
 http://localhost:8088/h2-console/
 - 계정 : sa / password
+
+
+### 사용기술
+- Frameworks: SpringBoot, SpringSecurity
+- ORM Library : JPA
+- DB: H2
+- WebFlux 를 사용하여 요청과 응답을 NIO 기반에서 작동이 될 수 있도록 구현
+- Swagger를 이용하여 개발자 친화적으로 빠르게 URL 테스트가 가능하도록 환경 구성
+- JUnit 를 기반으로 하여 중요한 로직에 대해서는 해당 기능이 정상 작동하는지 확인하며 개발 진행
